@@ -25,8 +25,10 @@ class _LoginPageState extends State<LoginPage> {
               decoration: const InputDecoration(
                 labelText: "Enter Phone Number"
               ),
+              keyboardType: TextInputType.number,
             ),
              TextField(
+              keyboardType: TextInputType.number,
               controller: otpController,
               decoration: const InputDecoration(
                 labelText: "Enter Otp"
