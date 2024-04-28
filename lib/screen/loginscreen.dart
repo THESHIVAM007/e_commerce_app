@@ -23,8 +23,10 @@ class _LoginPageState extends State<LoginPage> {
              TextField(
               controller: phoneController,
               decoration: const InputDecoration(
-                labelText: "Enter Phone Number"
+                labelText: "Enter Phone Number",
+                counterText: "",
               ),
+              maxLength: 10,
               keyboardType: TextInputType.number,
             ),
              TextField(
