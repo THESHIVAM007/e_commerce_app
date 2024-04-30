@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/auth/auth_service.dart';
+import 'package:e_commerce_app/model/product.dart';
 import 'package:e_commerce_app/screen/cartscreen.dart';
 import 'package:flutter/material.dart';
 
@@ -11,14 +12,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    getProducts();
+    super.initState();
+  }
   FirebaseFirestore db = FirebaseFirestore.instance;
+  List<Product> products = [];
   Future<void> getProducts() async {
-    await db.collection("products").get()
-      .then((event) {
-        for (var doc in event.docs) {
-          print("${doc.id} => ${doc.data()}");
+    try {
+      await db.collection("products").get().then((querySnapshot) {
+        for (var doc in querySnapshot.docs) {
+          Product newProduct = Product.fromFirestore(doc.data());
+          print(newProduct);
+          products.add(newProduct);
         }
+        setState(() {});
       });
+    } catch (e) {
+      print('Error fetching products: $e');
+    }
   }
 
   @override
@@ -44,8 +58,28 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: const Center(
-        child: Text("Homepage.."),
+      body: Center(
+        child: Column(
+          children: [
+            const Text("Homepage.."),
+            // ElevatedButton(
+            //   onPressed: getProducts,
+            //   child: const Text("get data"),
+            // ),
+            products.isNotEmpty
+                ? ListView.builder(
+                  shrinkWrap: true,
+                    itemCount: products.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title:Text( products[index].name),
+                        leading: Text("${products[index].price}"),
+                        subtitle: Text(products[index].category),
+                      );
+                    })
+                : const Text("NoProd found"),
+          ],
+        ),
       ),
     );
   }

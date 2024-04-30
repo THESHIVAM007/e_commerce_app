@@ -13,7 +13,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    String phoneNumber = phoneController.text;
+    // String phoneNumber = phoneController.text;
     return Scaffold(
       backgroundColor: Colors.purple.shade100,
       body: Center(
@@ -62,6 +62,8 @@ class _LoginPageState extends State<LoginPage> {
                     backgroundColor: MaterialStatePropertyAll(Colors.red),
                     foregroundColor: MaterialStatePropertyAll(Colors.white)),
                 onPressed: () {
+                      String phoneNumber = phoneController.text;
+                  print(RegExp(r'^[0-9]{10}$').hasMatch(phoneNumber));
                   if (phoneNumber.length == 10 &&
                       RegExp(r'^[0-9]{10}$').hasMatch(phoneNumber)) {
                     AuthRepo.verifyPhoneNumber(context, phoneNumber);
