@@ -46,7 +46,7 @@ class _OtpScreenState extends State<OtpScreen> {
                     ),
                     labelText: "Enter Otp"),
               ),
-              ElevatedButton(  
+              ElevatedButton(
                 style: const ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(Colors.blue),
                     foregroundColor: MaterialStatePropertyAll(Colors.white)),

@@ -1,9 +1,25 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/auth/auth_service.dart';
 import 'package:e_commerce_app/screen/cartscreen.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  FirebaseFirestore db = FirebaseFirestore.instance;
+  Future<void> getProducts() async {
+    await db.collection("products").get()
+      .then((event) {
+        for (var doc in event.docs) {
+          print("${doc.id} => ${doc.data()}");
+        }
+      });
+  }
 
   @override
   Widget build(BuildContext context) {
