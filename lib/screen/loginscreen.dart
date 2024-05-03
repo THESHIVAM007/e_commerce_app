@@ -13,9 +13,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    // String phoneNumber = phoneController.text;
     return Scaffold(
-      backgroundColor: Colors.purple.shade100,
+      backgroundColor: Colors.grey.shade200,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -25,13 +24,14 @@ class _LoginPageState extends State<LoginPage> {
               const Text(
                 'Login / SignUp',
                 style: TextStyle(
+                  
                   shadows: [
                     Shadow(
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 233, 180, 242),
                       offset: Offset(1, 2),
                     ),
                   ],
-                  color: Colors.white,
+                  color: Colors.purple,
                   fontSize: 28,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold,
@@ -58,19 +58,18 @@ class _LoginPageState extends State<LoginPage> {
                 height: 10,
               ),
               ElevatedButton(
-                style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Colors.red),
-                    foregroundColor: MaterialStatePropertyAll(Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.purple,
+                ),
                 onPressed: () {
-                      String phoneNumber = phoneController.text;
-                  print(RegExp(r'^[0-9]{10}$').hasMatch(phoneNumber));
+                  String phoneNumber = phoneController.text;
                   if (phoneNumber.length == 10 &&
                       RegExp(r'^[0-9]{10}$').hasMatch(phoneNumber)) {
                     AuthRepo.verifyPhoneNumber(context, phoneNumber);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text("Please enter valid Number"),
+                        content: Text("Please enter a valid phone number"),
                       ),
                     );
                   }

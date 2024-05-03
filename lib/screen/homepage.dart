@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
                                 backgroundColor: Colors.purple,
                               ),
                               onPressed: () {
-                               addToCart(products[index]);
+                              addToCart(products[index]);
                               },
                               child: const Text(
                                 'Add to Cart',

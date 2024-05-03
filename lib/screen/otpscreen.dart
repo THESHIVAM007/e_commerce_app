@@ -9,13 +9,12 @@ class OtpScreen extends StatefulWidget {
 }
 
 class _OtpScreenState extends State<OtpScreen> {
-    TextEditingController otpController = TextEditingController();
+  TextEditingController otpController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.purple.shade100,
-
+      backgroundColor: Colors.grey.shade200,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -25,8 +24,13 @@ class _OtpScreenState extends State<OtpScreen> {
               const Text(
                 'OTP',
                 style: TextStyle(
-                  shadows: [Shadow(color: Colors.black,offset: Offset(1, 2),),],
-                  color: Colors.white,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black,
+                      offset: Offset(1, 2),
+                    ),
+                  ],
+                  color: Colors.purple,
                   fontSize: 28,
                   fontStyle: FontStyle.italic,
                   fontWeight: FontWeight.bold,
@@ -39,17 +43,18 @@ class _OtpScreenState extends State<OtpScreen> {
                 keyboardType: TextInputType.number,
                 controller: otpController,
                 decoration: const InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(15),
                     ),
-                    labelText: "Enter Otp"),
+                  ),
+                  labelText: "Enter OTP",
+                ),
               ),
               ElevatedButton(
-                style: const ButtonStyle(
-                    backgroundColor: MaterialStatePropertyAll(Colors.blue),
-                    foregroundColor: MaterialStatePropertyAll(Colors.white)),
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: Colors.purple,
+                ),
                 onPressed: () {
                   AuthRepo.submitOtp(context, otpController.text);
                 },
