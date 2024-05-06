@@ -1,43 +1,26 @@
-// import 'package:e_commerce_app/screen/homepage.dart';
 import 'package:e_commerce_app/screen/homepage.dart';
 import 'package:e_commerce_app/screen/loginscreen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
- import 'firebase_options.dart';
-/// // ...
-/// await Firebase.initializeApp(
-///   options: DefaultFirebaseOptions.currentPlatform,
-/// );
-void main() async{
+import 'firebase_options.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
-  runApp(const MyApp());
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Check if the user is already logged in
+  User? user = FirebaseAuth.instance.currentUser;
+  runApp(ProviderScope(child: MyApp(curruser: user)));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+class MyApp extends StatelessWidget {
+  final User? curruser;
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
+  const MyApp({Key? key, this.curruser}) : super(key: key);
 
-class _MyAppState extends State<MyApp> {
-  User? curruser;
- @override
-  void initState() {
-    super.initState();
-    FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if (user == null) {
-        print('User is currently signed out!');
-      } else {
-        curruser = user;
-        print('User is signed in!');
-      }
-    });
-  }
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -47,7 +30,8 @@ class _MyAppState extends State<MyApp> {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: curruser == null ? const LoginPage(): const HomePage(),
+      // Use conditional operator to determine which screen to show
+      home: curruser == null ? const LoginPage() : const HomePage(),
     );
   }
 }
