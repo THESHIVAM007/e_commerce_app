@@ -1,12 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/screen/homepage.dart';
 import 'package:e_commerce_app/screen/loginscreen.dart';
 import 'package:e_commerce_app/screen/otpscreen.dart';
+import 'package:e_commerce_app/screen/profilepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class AuthRepo {
   static String verId = "";
   static final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   static void verifyPhoneNumber(BuildContext context, String number) async {
     await _firebaseAuth.verifyPhoneNumber(
       phoneNumber: '+91 $number',
@@ -22,7 +25,7 @@ class AuthRepo {
       codeSent: (String verificationId, int? resendToken) {
         verId = verificationId;
         print("verficationId $verId");
-        Navigator.push(context, MaterialPageRoute(builder: (ctx){
+        Navigator.push(context, MaterialPageRoute(builder: (ctx) {
           return const OtpScreen();
         }));
         print("code sent");
@@ -55,16 +58,24 @@ class AuthRepo {
       );
       final UserCredential userCredential =
           await _firebaseAuth.signInWithCredential(credential);
-      print(userCredential.user!.phoneNumber);
-      print("Login successful");
-      // TODO: Navigate to home page
-      Navigator.push(context, MaterialPageRoute(builder: (context) {
-        return const HomePage();
-      }));
-//  Navigator.push(context,Mat)
+
+      // Check if the user already exists in Firestore
+      DocumentSnapshot userSnapshot = await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .get();
+
+      if (userSnapshot.exists) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } else {
+        // User does not exist, navigate to ProfilePage to complete profile
+        Navigator.push(context, MaterialPageRoute(builder: (context) {
+          return ProfilePage(userCredential: userCredential);
+        }));
+      }
     } catch (e) {
       print('Error signing in with phone number: $e');
-      // return null;
     }
   }
 }

@@ -38,7 +38,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   int count = 0;
 
   @override
@@ -64,10 +63,15 @@ class _HomePageState extends State<HomePage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return  const CartScreen();
-              }));
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const CartScreen()),
+              );
+              if (result == true) {
+                // Refresh the page
+                setState(() {});
+              }
             },
             icon: const Icon(Icons.shopping_cart, color: Colors.white),
           ),

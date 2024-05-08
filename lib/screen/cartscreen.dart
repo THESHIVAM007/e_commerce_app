@@ -3,19 +3,23 @@ import 'package:e_commerce_app/widget/addtocartbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
 
   @override
   ConsumerState<CartScreen> createState() => _CartScreenState();
 }
+
 class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.purple,
+        leading: IconButton(onPressed: () {
+        Navigator.pop(context, true);
+        }, icon: const Icon(Icons.arrow_back)),
         title: const Text(
           "My Cart",
           style: TextStyle(

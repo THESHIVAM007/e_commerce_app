@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'firebase_options.dart';
 
@@ -11,15 +12,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Check if the user is already logged in
-  User? user = FirebaseAuth.instance.currentUser;
-  runApp(ProviderScope(child: MyApp(curruser: user)));
+  runApp(const ProviderScope(child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
-  final User? curruser;
-
-  const MyApp({Key? key, this.curruser}) : super(key: key);
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +27,33 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      // Use conditional operator to determine which screen to show
-      home: curruser == null ? const LoginPage() : const HomePage(),
+      home: FutureBuilder(
+        future: _getUserStatus(),
+        builder: (context, AsyncSnapshot<Widget> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator();
+          }
+          return snapshot.data ?? const LoginPage();
+        },
+      ),
     );
+  }
+
+  // Function to determine which page to navigate to based on user status
+  Future<Widget> _getUserStatus() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      return const LoginPage();
+    } else {
+      // Check if the user exists in the Firestore users collection
+      final doc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+      if (!doc.exists) {
+        // User is authenticated but not in Firestore users collection
+        return const LoginPage(); 
+      } else {
+        // User exists in users collection
+        return const HomePage();
+      }
+    }
   }
 }

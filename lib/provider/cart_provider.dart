@@ -14,10 +14,12 @@ class CartProductNotifier extends StateNotifier<List<Product>> {
       print("Productqtyyyy ${product.qty}");
     }else{
       state.add(product);
+      product.qty++;
     }
   }
   void removeFromCart(Product product) {
     if(product.qty==1){
+      product.qty--;
     state.remove(product);
     }
     if(product.qty >1){

@@ -22,7 +22,7 @@ class _AddToCartButtonState extends ConsumerState<AddToCartButton> {
     if (widget.product.qty < 5) {
       setState(() {
         ref.watch(cartProductProvider.notifier).addToCart(widget.product);
-        widget.product.qty++;
+
       });
     }
   }
@@ -30,7 +30,6 @@ class _AddToCartButtonState extends ConsumerState<AddToCartButton> {
   void decrement() {
           setState(() {
         ref.read(cartProductProvider.notifier).removeFromCart(widget.product);
-            widget.product.qty--;
       });
     
   }
