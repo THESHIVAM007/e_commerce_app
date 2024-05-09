@@ -1,4 +1,5 @@
 import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/screen/checkoutpage.dart';
 import 'package:e_commerce_app/widget/addtocartbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,9 +18,11 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.purple,
-        leading: IconButton(onPressed: () {
-        Navigator.pop(context, true);
-        }, icon: const Icon(Icons.arrow_back)),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context, true);
+            },
+            icon: const Icon(Icons.arrow_back)),
         title: const Text(
           "My Cart",
           style: TextStyle(
@@ -38,18 +41,19 @@ class _CartScreenState extends ConsumerState<CartScreen> {
       body: Consumer(
         builder: (context, watch, child) {
           final cartItems = ref.watch(cartProductProvider);
-          print(cartItems);
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                cartItems.isNotEmpty
-                    ? ListView.builder(
+          final total = cartItems.fold<double>(
+              0.0, (sum, item) => sum + (item.price * item.qty));
+          return cartItems.isNotEmpty
+              ? SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: cartItems.length,
                         itemBuilder: (context, index) {
                           return Card(
-                            color: Colors.white,
+                            // color: Colors.white,
                             elevation: 3,
                             child: Row(
                               children: [
@@ -100,7 +104,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                         ),
                                         const SizedBox(height: 4),
                                         Text(
-                                          '\$${cartItems[index].price.toStringAsFixed(2)}',
+                                          '₹ ${cartItems[index].price.toStringAsFixed(2)}',
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 16,
@@ -118,22 +122,56 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                             ),
                           );
                         },
-                      )
-                    : const Center(child: Text("No products found")),
-                Container(
-                  child: Column(
-                    children: [
-                      const Text("Cart total: 12000"),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: const Text("Checkout"),
+                      ),
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(8),
+                        child: Row(
+                          children: [
+                            const Text(
+                              "Cart total -",
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                            const Spacer(),
+                            Text(" ₹ $total",
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ))
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ElevatedButton(
+                            style: const ButtonStyle(
+                              backgroundColor: MaterialStatePropertyAll(Colors.purple,)
+                            ),
+                            onPressed: () {
+                              Navigator.push(context, MaterialPageRoute(
+                                builder: (context) {
+                                  return const CheckoutPage();
+                                },
+                              ));
+                            },
+                            child: const Text("Checkout",style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16
+                            ),),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-          );
+                )
+              : const Center(child: Text("No products found"));
         },
       ),
     );

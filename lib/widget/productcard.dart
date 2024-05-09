@@ -61,7 +61,7 @@ class _ProductCardState extends State<ProductCard> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              '\$${widget.product.price.toStringAsFixed(2)}',
+                              '₹ ${widget.product.price.toStringAsFixed(2)}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
