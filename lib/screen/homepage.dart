@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/auth/auth_service.dart';
 import 'package:e_commerce_app/model/product.dart';
 import 'package:e_commerce_app/screen/cartscreen.dart';
+import 'package:e_commerce_app/screen/userpage.dart';
 import 'package:e_commerce_app/widget/productcard.dart';
 import 'package:flutter/material.dart';
 
@@ -61,6 +62,17 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
+        leading: IconButton(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return const UserPage();
+                  },
+                ),
+              );
+            },
+            icon: const Icon(Icons.person)),
         actions: [
           IconButton(
             onPressed: () async {
