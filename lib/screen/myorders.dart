@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:e_commerce_app/screen/orderdetails.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -48,7 +49,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                     subtitle: Text('Total: \$${orderData['totalAmount']}'),
                     trailing: Text('Status: ${orderData['orderStatus']}'),
                     onTap: () {
-                      // Navigate to order details page if needed
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsPage(orderId: order.id),));
                     },
                   );
                 },
