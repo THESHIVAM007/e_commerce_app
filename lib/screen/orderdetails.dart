@@ -59,7 +59,7 @@ class OrderDetailsPage extends StatelessWidget {
                   Text('Order ID: ${snapshot.data!.id}', style: Theme.of(context).textTheme.titleLarge),
                   Text('Total Amount: \$${orderData['totalAmount']}', style: Theme.of(context).textTheme.titleLarge),
                   Text('Status: ${orderData['orderStatus']}', style: Theme.of(context).textTheme.titleLarge),
-                  Text('Order Date: ${TimestampToDate(Timestamp.fromDate(orderData['orderDate']))}', style: Theme.of(context).textTheme.titleLarge),
+                  Text('Order Date: ${TimestampToDate(orderData['orderDate'] as Timestamp)}', ),
                   const Divider(),
                   const Text('Products', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
                   ListView.builder(
@@ -97,8 +97,9 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
-  String TimestampToDate(Timestamp timestamp) {
-    DateTime date = timestamp.toDate();
-    return "${date.day}/${date.month}/${date.year}"; // Customize this format as needed
-  }
+ String TimestampToDate(Timestamp timestamp) {
+  DateTime date = timestamp.toDate(); // Convert Firestore Timestamp to DateTime
+  return "${date.day}/${date.month}/${date.year}"; // Customize this format as needed
+}
+
 }
