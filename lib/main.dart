@@ -24,8 +24,22 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        primarySwatch: Colors.orange, // Setting a basic color similar to #EE9002
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFFEE9002), // Main theme color
+          primary: const Color(0xFFEE9002), // AppBar, buttons, etc.
+          secondary: const Color(0xFFF3B566), // Another shade for contrast
+          onPrimary: Colors.white, // Text color on top of primary color
+          surface: Colors.white, // Card and dialog backgrounds
+          onSurface: Colors.black, // Text color on top of surfaces
+          background: Colors.white, // App background color
+          onBackground: Colors.black, // Text color on background
+        ),
         useMaterial3: true,
+        buttonTheme: const ButtonThemeData(
+          buttonColor: Color(0xFFF3B566), // Lighter shade for buttons
+          textTheme: ButtonTextTheme.primary,
+        ),
       ),
       home: Scaffold(
         body: FutureBuilder(

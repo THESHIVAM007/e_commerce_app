@@ -26,7 +26,7 @@ class AuthRepo {
         verId = verificationId;
         print("verficationId $verId");
         Navigator.push(context, MaterialPageRoute(builder: (ctx) {
-          return const OtpScreen();
+          return  OtpScreen(number: number,);
         }));
         print("code sent");
       },
