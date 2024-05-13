@@ -123,7 +123,7 @@ void showOrderSuccessDialog() {
                 ),
                 ListTile(
                   title: const Text("Cart Total", style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text("\$${cartTotal.toStringAsFixed(2)}", style: TextStyle(color: Colors.grey[600])),
+                  subtitle: Text("₹${cartTotal.toStringAsFixed(2)}", style: TextStyle(color: Colors.grey[600])),
                 ),
                 // const Spacer(),
                 SizedBox(

@@ -15,7 +15,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   FirebaseFirestore db = FirebaseFirestore.instance;
-
   List<Product> products = [];
 
   @override
@@ -38,8 +37,6 @@ class _HomePageState extends State<HomePage> {
       print('Error fetching products: $e');
     }
   }
-
-  int count = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -66,9 +63,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) {
-                    return const UserPage();
-                  },
+                  builder: (context) => const UserPage(),
                 ),
               );
             },
@@ -81,7 +76,6 @@ class _HomePageState extends State<HomePage> {
                 MaterialPageRoute(builder: (context) => const CartScreen()),
               );
               if (result == true) {
-                // Refresh the page
                 setState(() {});
               }
             },
@@ -96,8 +90,14 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       body: products.isNotEmpty
-          ? ListView.builder(
-              shrinkWrap: true,
+          ? GridView.builder(
+              padding: const EdgeInsets.all(10),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // Two items per row
+                crossAxisSpacing: 5, // Horizontal space between items
+                mainAxisSpacing: 5, // Vertical space between items
+                childAspectRatio: .55, // Aspect ratio of each grid item
+              ),
               itemCount: products.length,
               itemBuilder: (context, index) {
                 return ProductCard(product: products[index]);

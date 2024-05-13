@@ -27,14 +27,16 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: FutureBuilder(
-        future: _getUserStatus(),
-        builder: (context, AsyncSnapshot<Widget> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          }
-          return snapshot.data ?? const LoginPage();
-        },
+      home: Scaffold(
+        body: FutureBuilder(
+          future: _getUserStatus(),
+          builder: (context, AsyncSnapshot<Widget> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            }
+            return snapshot.data ?? const LoginPage();
+          },
+        ),
       ),
     );
   }

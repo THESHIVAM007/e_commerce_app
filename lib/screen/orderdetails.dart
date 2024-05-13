@@ -57,7 +57,7 @@ class OrderDetailsPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Text('Order ID: ${snapshot.data!.id}', style: Theme.of(context).textTheme.titleLarge),
-                  Text('Total Amount: \$${orderData['totalAmount']}', style: Theme.of(context).textTheme.titleLarge),
+                  Text('Total Amount: ₹ ${orderData['totalAmount']}', style: Theme.of(context).textTheme.titleLarge),
                   Text('Status: ${orderData['orderStatus']}', style: Theme.of(context).textTheme.titleLarge),
                   Text('Order Date: ${TimestampToDate(orderData['orderDate'] as Timestamp)}', ),
                   const Divider(),
@@ -76,7 +76,7 @@ class OrderDetailsPage extends StatelessWidget {
                             Text('Quantity: ${products[index]['qty']}'),
                           ],
                         ),
-                        trailing: Text('\$${products[index]['price']}'),
+                        trailing: Text('₹ ${products[index]['price']}'),
                         leading: Image.network(products[index]['imageUrl'], width: 50, fit: BoxFit.cover),
                       );
                     },

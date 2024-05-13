@@ -46,7 +46,7 @@ class _MyOrdersPageState extends State<MyOrdersPage> {
                   var orderData = order.data() as Map<String, dynamic>;
                   return ListTile(
                     title: Text('Order ID: ${order.id}'),
-                    subtitle: Text('Total: \$${orderData['totalAmount']}'),
+                    subtitle: Text('Total: ₹ ${orderData['totalAmount']}'),
                     trailing: Text('Status: ${orderData['orderStatus']}'),
                     onTap: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => OrderDetailsPage(orderId: order.id),));
