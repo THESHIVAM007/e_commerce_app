@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/auth/auth_service.dart';
 import 'package:e_commerce_app/model/product.dart';
 import 'package:e_commerce_app/screen/cartscreen.dart';
-import 'package:e_commerce_app/screen/userpage.dart';
+import 'package:e_commerce_app/screen/myorders.dart';
 import 'package:e_commerce_app/widget/productcard.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +42,25 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            ListTile(
+              title: const Text("My Orders"),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyOrdersPage(),));
+              },
+            ),
+            ListTile(
+              title: const Text("Log Out"),
+              onTap: () {
+              AuthRepo.logoutApp(context);
+            
+              },
+            )
+          ],
+        ),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.purple,
         automaticallyImplyLeading: false,
@@ -59,15 +78,12 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const UserPage(),
-                ),
-              );
-            },
-            icon: const Icon(Icons.person)),
+          leading: Builder( // Use Builder to create the correct context for Scaffold.of()
+          builder: (context) => IconButton(
+            onPressed: () => Scaffold.of(context).openDrawer(),
+            icon: const Icon(Icons.menu,color: Colors.white,),
+          ),
+        ),
         actions: [
           IconButton(
             onPressed: () async {
