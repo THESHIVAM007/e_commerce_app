@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           future: _getUserStatus(),
           builder: (context, AsyncSnapshot<Widget> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
+              return const Center(child: CircularProgressIndicator());
             }
             return snapshot.data ?? const LoginPage();
           },

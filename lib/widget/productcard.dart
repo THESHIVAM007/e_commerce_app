@@ -17,22 +17,28 @@ class _ProductCardState extends State<ProductCard> {
     return Container(
       decoration: BoxDecoration(
       color: Colors.white,
-        borderRadius: BorderRadius.circular(10)
+        // borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: const Color.fromARGB(255, 210, 206, 206))
       ),
-      margin: const EdgeInsets.all(8),
+      // margin: const EdgeInsets.all(8),
       // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Column(
         // crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisSize: MainAxisSize.min,  // Important to manage size properly
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-            child: Image.network(
-              widget.product.imageUrl,
-              fit: BoxFit.cover,
-              height: 150,
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ClipRRect(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
+              child: Image.network(
+                widget.product.imageUrl,
+                fit: BoxFit.cover,
+                height: 150,
+              ),
             ),
           ),
+          const Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -41,7 +47,7 @@ class _ProductCardState extends State<ProductCard> {
                 Text(
                   widget.product.name,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.primaryColor,
+                    color: Colors.black,
                     fontWeight: FontWeight.bold,
                   ),
                   overflow: TextOverflow.ellipsis,

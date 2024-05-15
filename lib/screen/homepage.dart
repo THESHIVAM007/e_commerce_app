@@ -1,19 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:e_commerce_app/auth/auth_service.dart';
 import 'package:e_commerce_app/model/product.dart';
+import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/screen/cartscreen.dart';
 import 'package:e_commerce_app/screen/myorders.dart';
 import 'package:e_commerce_app/widget/productcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends ConsumerStatefulWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends ConsumerState<HomePage> {
   FirebaseFirestore db = FirebaseFirestore.instance;
   List<Product> products = [];
 
@@ -28,7 +30,6 @@ class _HomePageState extends State<HomePage> {
       await db.collection("products").get().then((querySnapshot) {
         for (var doc in querySnapshot.docs) {
           Product newProduct = Product.fromFirestore(doc.data());
-          print(newProduct.imageUrl);
           products.add(newProduct);
         }
         setState(() {});
@@ -40,52 +41,52 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    var count = ref.watch(cartProductProvider).length;
+    ThemeData theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.grey.shade200,
+      backgroundColor: theme.colorScheme.background,
       drawer: Drawer(
         child: ListView(
           children: [
+            const SizedBox(height: 50,),
             ListTile(
-              title: const Text("My Orders"),
+              title: Text("My Orders", style: TextStyle(color: theme.primaryColor)),
               onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyOrdersPage(),));
+                Navigator.of(context).push(MaterialPageRoute(builder: (context) => const MyOrdersPage()));
               },
             ),
             ListTile(
-              title: const Text("Log Out"),
+              title: Text("Log Out", style: TextStyle(color: theme.primaryColor)),
               onTap: () {
-              AuthRepo.logoutApp(context);
-            
+                AuthRepo.logoutApp(context);
               },
             )
           ],
         ),
       ),
+      
       appBar: AppBar(
-        backgroundColor: Colors.purple,
-        automaticallyImplyLeading: false,
-        title: const Text(
+        backgroundColor: theme.colorScheme.primary,
+        title: Text(
           "HomePage",
           style: TextStyle(
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
             fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            shadows: [
-              Shadow(
-                color: Colors.black,
-                offset: Offset(1, 2),
-              ),
-            ],
           ),
         ),
-          leading: Builder( // Use Builder to create the correct context for Scaffold.of()
+        leading: Builder(
           builder: (context) => IconButton(
+            icon: const Icon(Icons.menu),
+            color: theme.colorScheme.onPrimary,
             onPressed: () => Scaffold.of(context).openDrawer(),
-            icon: const Icon(Icons.menu,color: Colors.white,),
           ),
         ),
         actions: [
           IconButton(
+            icon:  Badge(
+              label: Text("$count"),
+              child: const Icon(Icons.shopping_cart)),
+            color: theme.colorScheme.onPrimary,
             onPressed: () async {
               final result = await Navigator.push(
                 context,
@@ -95,13 +96,6 @@ class _HomePageState extends State<HomePage> {
                 setState(() {});
               }
             },
-            icon: const Icon(Icons.shopping_cart, color: Colors.white),
-          ),
-          IconButton(
-            onPressed: () {
-              AuthRepo.logoutApp(context);
-            },
-            icon: const Icon(Icons.logout_outlined, color: Colors.white),
           ),
         ],
       ),
@@ -109,16 +103,14 @@ class _HomePageState extends State<HomePage> {
           ? GridView.builder(
               padding: const EdgeInsets.all(10),
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // Two items per row
-                crossAxisSpacing: 5, // Horizontal space between items
-                mainAxisSpacing: 5, // Vertical space between items
-                childAspectRatio: .55, // Aspect ratio of each grid item
+                crossAxisCount: 2,
+                childAspectRatio: .5,
               ),
               itemCount: products.length,
               itemBuilder: (context, index) {
                 return ProductCard(product: products[index]);
               })
-          : const Center(child: Text("No products found")),
+          : const Center(child: Text("No products found", style: TextStyle(color: Colors.black))),
     );
   }
 }
