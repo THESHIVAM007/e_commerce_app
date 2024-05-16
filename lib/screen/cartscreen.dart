@@ -14,24 +14,25 @@ class CartScreen extends ConsumerStatefulWidget {
 class _CartScreenState extends ConsumerState<CartScreen> {
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.purple,
+        backgroundColor: theme.colorScheme.primary,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context, true);
             },
-            icon: const Icon(Icons.arrow_back)),
-        title: const Text(
+            icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary)),
+        title: Text(
           "My Cart",
           style: TextStyle(
-            color: Colors.white,
+            color: theme.colorScheme.onPrimary,
             fontWeight: FontWeight.bold,
             fontStyle: FontStyle.italic,
-            shadows: [
+            shadows: const [
               Shadow(
-                color: Colors.black,
+                color: Colors.black45,
                 offset: Offset(1, 2),
               ),
             ],
@@ -53,7 +54,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         itemCount: cartItems.length,
                         itemBuilder: (context, index) {
                           return Card(
-                            // color: Colors.white,
+                            color: Colors.white,
                             elevation: 3,
                             child: Row(
                               children: [
@@ -79,38 +80,22 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                       children: [
                                         Text(
                                           cartItems[index].name,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                                          style: theme.textTheme.titleLarge,
                                         ),
-                                        const SizedBox(height: 4),
                                         Text(
                                           cartItems[index].category,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            color: Colors.grey,
-                                          ),
+                                          style: theme.textTheme.titleSmall,
                                         ),
-                                        const SizedBox(height: 4),
                                         Text(
                                           cartItems[index].description,
                                           maxLines: 3,
                                           overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            color: Colors.grey,
-                                          ),
+                                          style: theme.textTheme.bodyMedium,
                                         ),
-                                        const SizedBox(height: 4),
                                         Text(
                                           '₹ ${cartItems[index].price.toStringAsFixed(2)}',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
+                                          style: theme.textTheme.titleLarge,
                                         ),
-                                        const SizedBox(height: 8),
                                         AddToCartButton(
                                           product: cartItems[index],
                                         ),
@@ -123,49 +108,33 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                           );
                         },
                       ),
-                      Container(
-                        width: double.infinity,
+                      Padding(
                         padding: const EdgeInsets.all(8),
                         child: Row(
                           children: [
-                            const Text(
+                            Text(
                               "Cart total -",
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
+                              style: theme.textTheme.titleLarge,
                             ),
                             const Spacer(),
-                            Text(" ₹ $total",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ))
+                            Text("₹ $total", style: theme.textTheme.titleLarge)
                           ],
                         ),
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll(Colors.purple,)
-                            ),
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(
-                                builder: (context) {
-                                  return const CheckoutPage();
-                                },
-                              ));
-                            },
-                            child: const Text("Checkout",style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16
-                            ),),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                            textStyle: MaterialStatePropertyAll(theme.textTheme.labelLarge),
+                            backgroundColor: MaterialStatePropertyAll(theme.colorScheme.secondary),
+                            foregroundColor: MaterialStatePropertyAll(theme.colorScheme.onPrimary),
                           ),
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (context) => const CheckoutPage(),
+                            ));
+                          },
+                          child: const Text("Checkout"),
                         ),
                       ),
                     ],

@@ -16,27 +16,21 @@ class AddToCartButton extends ConsumerStatefulWidget {
 }
 
 class _AddToCartButtonState extends ConsumerState<AddToCartButton> {
-
-
   void increment() {
     if (widget.product.qty < 5) {
-      setState(() {
-        ref.watch(cartProductProvider.notifier).addToCart(widget.product);
-
-      });
+      ref.read(cartProductProvider.notifier).addToCart(widget.product);
     }
   }
 
   void decrement() {
-          setState(() {
-        ref.read(cartProductProvider.notifier).removeFromCart(widget.product);
-      });
-    
+    if (widget.product.qty > 0) {
+      ref.read(cartProductProvider.notifier).removeFromCart(widget.product);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-
+    ThemeData theme = Theme.of(context);
     return widget.product.qty > 0
         ? Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -44,35 +38,32 @@ class _AddToCartButtonState extends ConsumerState<AddToCartButton> {
               IconButton(
                 onPressed: decrement,
                 icon: const Icon(Icons.remove),
-                color: Colors.purple,
+                color: theme.colorScheme.primary,
               ),
               Text(
                 '${widget.product.qty}',
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
+                  color: theme.textTheme.bodyLarge?.color,
                 ),
               ),
               IconButton(
                 onPressed: increment,
                 icon: const Icon(Icons.add),
-                color: Colors.purple,
+                color: theme.colorScheme.primary,
               ),
             ],
           )
         : SizedBox(
-            width: double.infinity,
+          width: double.maxFinite,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
+                backgroundColor: theme.colorScheme.primary, // use secondary color or another color that fits your theme
+                foregroundColor: Colors.white, // Text color on button
               ),
               onPressed: increment,
-              child: const Text(
-                'Add to Cart',
-                style: TextStyle(
-                  color: Colors.white,
-                ),
-              ),
+              child: const Text('Add to Cart'),
             ),
           );
   }
