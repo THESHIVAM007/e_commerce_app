@@ -1,8 +1,9 @@
-import 'package:e_commerce_app/provider/cart_provider.dart';
-import 'package:e_commerce_app/screen/checkoutpage.dart';
-import 'package:e_commerce_app/widget/addtocartbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:e_commerce_app/provider/cart_provider.dart';
+import 'package:e_commerce_app/widget/addtocartbutton.dart';
+import 'package:e_commerce_app/screen/checkoutpage.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -17,33 +18,18 @@ class _CartScreenState extends ConsumerState<CartScreen> {
     ThemeData theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         backgroundColor: theme.colorScheme.primary,
+        title: const Text('Review Items'),
         leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-            icon: Icon(Icons.arrow_back, color: theme.colorScheme.onPrimary)),
-        title: Text(
-          "My Cart",
-          style: TextStyle(
-            color: theme.colorScheme.onPrimary,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            shadows: const [
-              Shadow(
-                color: Colors.black45,
-                offset: Offset(1, 2),
-              ),
-            ],
-          ),
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: Consumer(
-        builder: (context, watch, child) {
+        builder: (context, ref, child) {
           final cartItems = ref.watch(cartProductProvider);
           final total = cartItems.fold<double>(
-              0.0, (sum, item) => sum + (item.price * item.qty));
+              0.0, (sum, item) => sum + item.price * item.qty);
           return cartItems.isNotEmpty
               ? SingleChildScrollView(
                   child: Column(
@@ -52,95 +38,107 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemCount: cartItems.length,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            color: Colors.white,
-                            elevation: 3,
-                            child: Row(
-                              children: [
-                                Container(
-                                  decoration: const BoxDecoration(
-                                    color: Colors.black,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
-                                    ),
-                                  ),
-                                  child: Image.network(
-                                    cartItems[index].imageUrl,
-                                    fit: BoxFit.contain,
-                                    height: 80,
-                                  ),
+                        itemBuilder: (context, index) => Container(
+                          decoration: const BoxDecoration(color: Colors.white),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Image.network(
+                                  cartItems[index].imageUrl,
+                                  width: 30,
+                                  height: 30,
                                 ),
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          cartItems[index].name,
-                                          style: theme.textTheme.titleLarge,
-                                        ),
-                                        Text(
-                                          cartItems[index].category,
-                                          style: theme.textTheme.titleSmall,
-                                        ),
-                                        Text(
-                                          cartItems[index].description,
-                                          maxLines: 3,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: theme.textTheme.bodyMedium,
-                                        ),
-                                        Text(
-                                          '₹ ${cartItems[index].price.toStringAsFixed(2)}',
-                                          style: theme.textTheme.titleLarge,
-                                        ),
-                                        AddToCartButton(
-                                          product: cartItems[index],
-                                        ),
-                                      ],
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      cartItems[index].name,
+                                      maxLines:
+                                          1, // Ensures the text doesn't wrap to the next line
+                                      overflow: TextOverflow
+                                          .ellipsis, // Adds an ellipsis to texts that would overflow
+                                      softWrap:
+                                          true, // Prevents text from wrapping onto the next line
                                     ),
-                                  ),
+                                    Text("${cartItems[index].qty}"),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Cart total -",
-                              style: theme.textTheme.titleLarge,
-                            ),
-                            const Spacer(),
-                            Text("₹ $total", style: theme.textTheme.titleLarge)
-                          ],
+                              ),
+                              AddToCartButton(product: cartItems[index]),
+                              const SizedBox(
+                                  width:
+                                      8), // Provide some spacing between the button and the price
+                              Text(
+                                "₹ ${(cartItems[index].price * cartItems[index].qty)}",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight
+                                        .bold), // Makes the price bold
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                            textStyle: MaterialStatePropertyAll(theme.textTheme.labelLarge),
-                            backgroundColor: MaterialStatePropertyAll(theme.colorScheme.secondary),
-                            foregroundColor: MaterialStatePropertyAll(theme.colorScheme.onPrimary),
-                          ),
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context) => const CheckoutPage(),
-                            ));
-                          },
-                          child: const Text("Checkout"),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text('Bill Details',
+                                style: theme.textTheme.titleLarge),
+                                const SizedBox(height: 10,),
+                            Row(
+                              children: [
+                                const Text('MRP Total:',
+                                    ),
+                                    const Spacer(),
+                                    Text("$total"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('Coupon Discount:',
+                                    ),
+                                    const Spacer(),
+                                    Text("$total"),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('MRP Total:',
+                                    ),
+                                    const Spacer(),
+                                    Text("$total"),
+                              ],
+                            ),
+                            const Text('Coupon Discount:'),
+                            Text('Handling Fee (incl GST): ₹5',
+                                style: theme.textTheme.titleMedium),
+                            const SizedBox(height: 20),
+                            ElevatedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const CheckoutPage(),
+                                    ));
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: theme.colorScheme.secondary,
+                              ),
+                              child: const Text('Proceed to Pay'),
+                            ),
+                          ],
                         ),
                       ),
                     ],
                   ),
                 )
-              : const Center(child: Text("No products found"));
+              : const Center(child: Text('No products found'));
         },
       ),
     );

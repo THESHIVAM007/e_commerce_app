@@ -17,7 +17,7 @@ class _ProductCardState extends State<ProductCard> {
     ThemeData theme = Theme.of(context);
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetalPage(product: widget.product),));
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductDetailPage(product: widget.product),));
       },
       child: Container(
         decoration: BoxDecoration(

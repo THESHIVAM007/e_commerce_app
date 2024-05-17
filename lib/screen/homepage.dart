@@ -64,7 +64,6 @@ class _HomePageState extends ConsumerState<HomePage> {
           ],
         ),
       ),
-      
       appBar: AppBar(
         backgroundColor: theme.colorScheme.primary,
         title: Text(
