@@ -148,7 +148,7 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                   foregroundColor: Colors.white,
-                                  backgroundColor: theme.colorScheme.secondary,
+                                  backgroundColor: theme.colorScheme.primary,
                                 ),
                                 child: const Text('Proceed to Pay'),
                               ),

@@ -9,12 +9,14 @@ class OrderDetailsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Use the theme for consistent styling
     final user = FirebaseAuth.instance.currentUser;
+
     if (user == null) {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Order Details'),
-          backgroundColor: Colors.purple,
+          backgroundColor: theme.colorScheme.primary,
         ),
         body: const Center(child: Text("You are not logged in")),
       );
@@ -23,7 +25,7 @@ class OrderDetailsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Order Details'),
-        backgroundColor: Colors.purple,
+        backgroundColor: theme.colorScheme.primary,
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future: FirebaseFirestore.instance
@@ -37,59 +39,43 @@ class OrderDetailsPage extends StatelessWidget {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return const Center(child: Text('Error loading order details'));
+            return Center(child: Text('Error loading order details', style: theme.textTheme.titleLarge));
           }
           if (!snapshot.hasData || snapshot.data!.data() == null) {
             return const Center(child: Text('No order found'));
           }
 
-          var orderData = snapshot.data!.data() as Map<String, dynamic>?; // Safe cast as nullable Map
-          if (orderData == null) { // Additional null check
+          var orderData = snapshot.data!.data() as Map<String, dynamic>?; 
+          if (orderData == null) {
             return const Center(child: Text('Order data is not available'));
           }
 
           var products = List<Map<String, dynamic>>.from(orderData['products'] as List<dynamic>);
 
           return SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text('Order ID: ${snapshot.data!.id}', style: Theme.of(context).textTheme.titleLarge),
-                  Text('Total Amount: ₹ ${orderData['totalAmount']}', style: Theme.of(context).textTheme.titleLarge),
-                  Text('Status: ${orderData['orderStatus']}', style: Theme.of(context).textTheme.titleLarge),
-                  Text('Order Date: ${TimestampToDate(orderData['orderDate'] as Timestamp)}', ),
-                  const Divider(),
-                  const Text('Products', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(products[index]['name']),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Description: ${products[index]['description']}'),
-                            Text('Quantity: ${products[index]['qty']}'),
-                          ],
-                        ),
-                        trailing: Text('₹ ${products[index]['price']}'),
-                        leading: Image.network(products[index]['imageUrl'], width: 50, fit: BoxFit.cover),
-                      );
-                    },
-                  ),
-                  const Divider(),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context); // Go back to previous screen
-                    },
-                    child: const Text('Back to Orders'),
-                  ),
-                ],
-              ),
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text('Order ID: ${snapshot.data!.id}', style: theme.textTheme.titleLarge),
+                Text('Total Amount: ₹ ${orderData['totalAmount']}', style: theme.textTheme.titleLarge),
+                Text('Status: ${orderData['orderStatus']}', style: theme.textTheme.titleLarge),
+                Text('Order Date: ${TimestampToDate(orderData['orderDate'] as Timestamp)}', style: theme.textTheme.bodyLarge),
+                const SizedBox(height: 20),
+                const Text('Products', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                ...products.map((product) => ListTile(
+                  title: Text(product['name'], style: theme.textTheme.titleMedium),
+                  subtitle: Text('Quantity: ${product['qty']} x ₹${product['price']} each', style: theme.textTheme.titleMedium),
+                  leading: Image.network(product['imageUrl'], width: 50, height: 50, fit: BoxFit.cover),
+                  isThreeLine: true,
+                )).toList(),
+                const SizedBox(height: 20),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary,foregroundColor: theme.colorScheme.onSurface),
+                  onPressed: () => Navigator.pop(context), // Go back to previous screen
+                  child: const Text('Back to Orders'),
+                ),
+              ],
             ),
           );
         },
@@ -97,9 +83,8 @@ class OrderDetailsPage extends StatelessWidget {
     );
   }
 
- String TimestampToDate(Timestamp timestamp) {
-  DateTime date = timestamp.toDate(); // Convert Firestore Timestamp to DateTime
-  return "${date.day}/${date.month}/${date.year}"; // Customize this format as needed
-}
-
+  String TimestampToDate(Timestamp timestamp) {
+    DateTime date = timestamp.toDate(); // Convert Firestore Timestamp to DateTime
+    return "${date.day}/${date.month}/${date.year}"; // Customize this format as needed
+  }
 }
