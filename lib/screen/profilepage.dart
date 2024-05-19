@@ -18,15 +18,11 @@ class _ProfilePageState extends State<ProfilePage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> addUserToFirestore() async {
-    // Check if the form is valid before proceeding
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
-
-      // Retrieve the phone number and uid from the UserCredential
       String phoneNumber = widget.userCredential.user!.phoneNumber!;
       String uid = widget.userCredential.user!.uid;
 
-      // Add the user information to Firestore
       await _firestore.collection('users').doc(uid).set({
         'fullName': fullName,
         'address': address,
@@ -34,74 +30,76 @@ class _ProfilePageState extends State<ProfilePage> {
         'uid': uid,
       });
 
-      // Inform the user with a dialog
       showDialog(
         context: context,
-        builder: (context) {
-          return const AlertDialog(
-            content: Text('Profile updated successfully!'),
-          );
-        },
+        builder: (context) => AlertDialog(
+          content: const Text('Profile updated successfully!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const HomePage())),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
       );
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const HomePage(),
-          ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Profile Information'),
+        backgroundColor: theme.colorScheme.primary,
       ),
       body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Full Name',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your full name';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    fullName = value!;
-                  },
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Full Name',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                    labelText: 'Address',
-                  ),
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your address';
-                    }
-                    return null;
-                  },
-                  onSaved: (value) {
-                    address = value!;
-                  },
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your full name';
+                  }
+                  return null;
+                },
+                onSaved: (value) => fullName = value ?? '',
+              ),
+              const SizedBox(height: 16.0),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Address',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.home),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: addUserToFirestore,
-                    child: const Text('Submit'),
-                  ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your address';
+                  }
+                  return null;
+                },
+                onSaved: (value) => address = value ?? '',
+              ),
+              const SizedBox(height: 32.0),
+              ElevatedButton(
+                onPressed: addUserToFirestore,
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white, backgroundColor: theme.colorScheme.primary,
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                 ),
-              ],
-            ),
+                child: const Text('Update Profile'),
+              ),
+            ],
           ),
         ),
       ),
