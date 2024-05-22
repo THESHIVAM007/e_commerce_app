@@ -110,6 +110,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       };
 
       await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('orders').add(orderData);
+      ref.watch(cartProductProvider.notifier).emptyCart();
       showOrderSuccessDialog();
     } catch (e) {
       print('Error creating order: $e');

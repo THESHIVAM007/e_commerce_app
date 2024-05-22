@@ -25,6 +25,9 @@ class CartProductNotifier extends StateNotifier<List<Product>> {
     }
     state = List.from(state);  // This ensures the list updates and notifies listeners.
   }
+  void emptyCart(){
+    state = [];
+  }
 
 
 }

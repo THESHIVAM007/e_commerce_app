@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/widget/addtocartbutton.dart';
 import 'package:e_commerce_app/screen/checkoutpage.dart';
