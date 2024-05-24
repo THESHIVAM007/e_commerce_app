@@ -25,10 +25,7 @@ class _ProductCardState extends State<ProductCard> {
           // borderRadius: BorderRadius.circular(10),
           border: Border.all(color: const Color.fromARGB(255, 210, 206, 206))
         ),
-        // margin: const EdgeInsets.all(8),
-        // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         child: Column(
-          // crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,  // Important to manage size properly
           children: [
             Padding(
