@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
@@ -54,8 +55,10 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.all(8.0),
-                                    child: Image.network(
-                                      cartItems[index].imageUrl,
+                                    child: CachedNetworkImage(
+                                      imageUrl: cartItems[index].imageUrl,
+                                      key: UniqueKey(),
+                                      placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
                                       width: 30,
                                       height: 30,
                                     ),

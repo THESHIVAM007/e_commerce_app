@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/model/product.dart';
 import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/widget/addtocartbutton.dart';
@@ -34,8 +35,11 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Image.network(
+                  child: CachedNetworkImage(
+                    imageUrl: 
                     widget.product.imageUrl,
+                    placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
+                    key: UniqueKey(),
                     fit: BoxFit.contain,
                     height: 300, // Adjust based on your layout
                     width: double.infinity,

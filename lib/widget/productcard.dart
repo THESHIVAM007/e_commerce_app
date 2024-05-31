@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/model/product.dart';
 import 'package:e_commerce_app/screen/productdetail.dart';
 import 'package:e_commerce_app/widget/addtocartbutton.dart';
@@ -33,8 +34,11 @@ class _ProductCardState extends State<ProductCard> {
               child: ClipRRect(
                 clipBehavior: Clip.antiAlias,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                child: Image.network(
+                child: CachedNetworkImage(
+                  imageUrl: 
                   widget.product.imageUrl,
+                  placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
+                  key: UniqueKey(),
                   fit: BoxFit.cover,
                   height: 150,
                 ),
