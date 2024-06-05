@@ -33,11 +33,13 @@ class _ProductCardState extends State<ProductCard> {
               padding: const EdgeInsets.all(8.0),
               child: ClipRRect(
                 clipBehavior: Clip.antiAlias,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
-                child: CachedNetworkImage(
-                  imageUrl: 
-                  widget.product.imageUrl,
-                  placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(8)
+                  ),
+                  child: CachedNetworkImage(
+                  imageUrl: widget.product.imageUrl,
+                  placeholder: (context, url) => const Center(
+                    child: CircularProgressIndicator(),),
                   key: UniqueKey(),
                   fit: BoxFit.cover,
                   height: 150,
