@@ -1,6 +1,4 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:e_commerce_app/model/product.dart';
-import 'package:e_commerce_app/provider/cart_provider.dart';
 import 'package:e_commerce_app/widget/addtocartbutton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,75 +15,94 @@ class _ProductDetailPageState extends ConsumerState<ProductDetailPage> {
   @override
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
-    final productQuantity = ref.read(cartProductProvider).firstWhere(
-        (p) => p.id == widget.product.id,
-        orElse: () => widget.product).qty;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.product.name, style: theme.textTheme.titleLarge),
-        backgroundColor: theme.colorScheme.primary,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Stack(
-              alignment: Alignment.bottomLeft,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: CachedNetworkImage(
-                    imageUrl: 
-                    widget.product.imageUrl,
-                    placeholder: (context, url) => const Center(child: CircularProgressIndicator(),),
-                    key: UniqueKey(),
-                    fit: BoxFit.contain,
-                    height: 300, // Adjust based on your layout
-                    width: double.infinity,
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    widget.product.name,
-                    style: theme.textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    '₹${widget.product.price}',
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      color: theme.colorScheme.secondary,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Description:',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    widget.product.description,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                   Text('Quantity in cart: $productQuantity'),
-                  const SizedBox(height: 20),
-                  AddToCartButton(product: widget.product)
-                ],
-              ),
-            ),
-          ],
+        backgroundColor: Colors.grey.shade200,
+        appBar: AppBar(
+          title: Text(widget.product.name, style: theme.textTheme.titleLarge),
+          backgroundColor: theme.colorScheme.primary,
         ),
-      ),
-    );
+        body: Center(
+          child: Column(
+            children: [
+              Card(
+                surfaceTintColor: Colors.white,
+                margin: const EdgeInsets.all(20),
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Image.network(
+                        widget.product.imageUrl,
+                        width: MediaQuery.of(context).size.width * .9,
+                        height: MediaQuery.of(context).size.width * .7,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          widget.product.name,
+                          style: const TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              '₹${widget.product.price.toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const Spacer(),
+                          SizedBox(
+                            width: MediaQuery.of(context).size.width * .5,
+                            child: AddToCartButton(product: widget.product),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 15,
+              ),
+              Container(
+                width: MediaQuery.of(context).size.width * .9,
+                height: 200,
+                decoration: const BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(15))),
+                child:  Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("Description",style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(widget.product.description),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }

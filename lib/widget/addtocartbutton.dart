@@ -19,12 +19,17 @@ class _AddToCartButtonState extends ConsumerState<AddToCartButton> {
   void increment() {
     if (widget.product.qty < 5) {
       ref.read(cartProductProvider.notifier).addToCart(widget.product);
+      setState(() {
+      });
     }
   }
 
   void decrement() {
     if (widget.product.qty > 0) {
       ref.read(cartProductProvider.notifier).removeFromCart(widget.product);
+      setState(() {
+        
+      });
     }
   }
 
