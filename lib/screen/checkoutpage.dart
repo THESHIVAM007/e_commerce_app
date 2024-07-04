@@ -3,7 +3,7 @@ import 'package:e_commerce_app/screen/homepage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:e_commerce_app/provider/cart_provider.dart'; 
+import 'package:e_commerce_app/provider/cart_provider.dart';
 
 class CheckoutPage extends ConsumerStatefulWidget {
   const CheckoutPage({super.key});
@@ -17,47 +17,61 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
   Widget build(BuildContext context) {
     ThemeData theme = Theme.of(context);
     final user = FirebaseAuth.instance.currentUser;
-    final cartTotal = ref.watch(cartProductProvider).fold<double>(
-        0.0, (sum, item) => sum + item.price * item.qty);
+    final cartTotal = ref
+        .watch(cartProductProvider)
+        .fold<double>(0.0, (sum, item) => sum + item.price * item.qty);
 
     return Scaffold(
       backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
         backgroundColor: theme.primaryColor,
-        title: const Text("Checkout", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        title: const Text("Checkout",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: FutureBuilder<DocumentSnapshot>(
-        future: FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
-        builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        future:
+            FirebaseFirestore.instance.collection('users').doc(user?.uid).get(),
+        builder:
+            (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
           if (snapshot.hasError) {
-            return Text("Something went wrong", style: theme.textTheme.titleLarge);
+            return Text("Something went wrong",
+                style: theme.textTheme.titleLarge);
           }
           if (!snapshot.hasData || snapshot.data!.data() == null) {
             return const Text("Document does not exist");
           }
-      
+
           var userData = snapshot.data!.data() as Map<String, dynamic>;
-      
+
           return SingleChildScrollView(
             child: Column(
               children: [
-                UserDetailsTile(userData: userData, title: "User name", detail: 'fullName'),
-                UserDetailsTile(userData: userData, title: "Phone Number", detail: 'phoneNumber'),
-                UserDetailsTile(userData: userData, title: "Address", detail: 'address'),
+                UserDetailsTile(
+                    userData: userData, title: "User name", detail: 'fullName'),
+                UserDetailsTile(
+                    userData: userData,
+                    title: "Phone Number",
+                    detail: 'phoneNumber'),
+                UserDetailsTile(
+                    userData: userData, title: "Address", detail: 'address'),
                 ListTile(
-                  title: const Text("Cart Total", style: TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text("₹${cartTotal.toStringAsFixed(2)}", style: TextStyle(color: Colors.grey[600])),
+                  title: const Text("Cart Total",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text("₹${cartTotal.toStringAsFixed(2)}",
+                      style: TextStyle(color: Colors.grey[600])),
                   trailing: ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.primary),
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary),
                     onPressed: createOrder,
-                    child: const Text("Proceed to Pay", style: TextStyle(color: Colors.white)),
+                    child: const Text("Proceed to Pay",
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -67,12 +81,18 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       ),
     );
   }
-  
-  Widget UserDetailsTile({required Map<String, dynamic> userData, required String title, required String detail}) {
+
+  Widget UserDetailsTile(
+      {required Map<String, dynamic> userData,
+      required String title,
+      required String detail}) {
     ThemeData theme = Theme.of(context);
     return ListTile(
-      title: Text(title, style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
-      subtitle: Text(userData[detail] ?? 'Not available', style: theme.textTheme.titleMedium),
+      title: Text(title,
+          style:
+              theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold)),
+      subtitle: Text(userData[detail] ?? 'Not available',
+          style: theme.textTheme.titleMedium),
     );
   }
 
@@ -97,19 +117,26 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
       final orderData = {
         'userId': user.uid,
         'orderDate': Timestamp.now(),
-        'products': cartProducts.map((product) => {
-          'id': product.id,
-          'name': product.name,
-          'price': product.price,
-          'qty': product.qty,
-          'imageUrl': product.imageUrl,
-          'description': product.description,
-        }).toList(),
-        'totalAmount': cartProducts.fold<double>(0.0, (sum, item) => sum + item.price * item.qty),
+        'products': cartProducts
+            .map((product) => {
+                  'id': product.id,
+                  'name': product.name,
+                  'price': product.price,
+                  'qty': product.qty,
+                  'imageUrl': product.imageUrl,
+                  'description': product.description,
+                })
+            .toList(),
+        'totalAmount': cartProducts.fold<double>(
+            0.0, (sum, item) => sum + item.price * item.qty),
         'orderStatus': 'Pending', // Example status
       };
 
-      await FirebaseFirestore.instance.collection('users').doc(user.uid).collection('orders').add(orderData);
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .collection('orders')
+          .add(orderData);
       ref.watch(cartProductProvider.notifier).emptyCart();
       showOrderSuccessDialog();
     } catch (e) {
