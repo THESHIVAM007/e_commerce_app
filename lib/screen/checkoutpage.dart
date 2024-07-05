@@ -131,6 +131,7 @@ class _CheckoutPageState extends ConsumerState<CheckoutPage> {
             0.0, (sum, item) => sum + item.price * item.qty),
         'orderStatus': 'Pending', // Example status
       };
+      print(orderData);
 
       await FirebaseFirestore.instance
           .collection('users')
